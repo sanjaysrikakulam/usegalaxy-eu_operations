@@ -9,6 +9,8 @@ title: Galaxy Upgrading procedures
 
 # 1 day before downtime
 
+Note: this is the way using `git rebase` see below for a different approach.
+
 1. Clone [our fork](https://github.com/usegalaxy-eu/galaxy/).
 2. Check out the release branch you want to switch to, e.g. `release_XX.ZZ`
 3. Ensure it's updated: `git pull`
@@ -22,6 +24,19 @@ title: Galaxy Upgrading procedures
 11. `git push -f`
 
 If you're rebasing against an updated release branch (because you branched much earlier) then you'll want to do a `git rebase -i release_XX.YY` and **drop** any 'CLIENTBUILD' type commits, before doing another round of client-build / plugin staging / adding static / committing.
+
+A different way to handle this is to use patches as follows:
+
+1. Clone [our fork](https://github.com/usegalaxy-eu/galaxy/).
+2. Check out the release branch you want to switch to, e.g. `release_XX.ZZ`
+3. Ensure it's updated: `git pull`
+4. Checkout *our* previous release branch (`release_XX.YY`)
+5. `git rebase -i release_XX.ZZ` to rebase our commits on top of the
+7. Update [`infrastructure-playbook`](https://github.com/usegalaxy-eu/infrastructure-playbook/) to sync configuration files and PR this + latest commit ID of the new branch
+8. `make client-production`
+9. `python scripts/plugin_staging.py` (if it exists)
+
+
 
 # Downtime begins
 
